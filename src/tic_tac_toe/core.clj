@@ -8,13 +8,16 @@
     (let [new-board (logic/fill-board board move player)]
       (cond
         (logic/game-over? new-board player) {:board new-board :message (str "Player " player " wins! Game over!")}
-        (logic/tie? new-board) {:board new-board :message "It's a tie! Game over!"}
+        (logic/full-board? new-board) {:board new-board :message "It's a tie! Game over!"}
         :else {:board new-board :player (logic/switch-player player)}))
     {:board board :player player :message "Invalid move! Try again."}))
 
 (defn play!
   []
-  (let [initial-board (vec (repeat 3 (vec (repeat 3 "-"))))
+  (let [initial-board (->> (repeat 3 "-")
+                          (vec)
+                          (repeat 3)
+                          (vec))
         initial-player "X"]
     (console/print-board! initial-board)
     (loop [board initial-board player initial-player]

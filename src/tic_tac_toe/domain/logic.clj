@@ -1,9 +1,13 @@
 (ns tic-tac-toe.domain.logic)
 
+
 (defn validate-entry?
   [move]
-  (->> move
-       (every? #(and (>= % 0) (< % 3)))))
+  (and (vector? move)
+       (= 2 (count move))
+       (every? number? move)
+       (not-any? nil? move)
+       (every? #(and (>= % 0) (< % 3)) move)))
 
 (defn allowedPosition?
   [board move]
@@ -22,7 +26,10 @@
 
 (defn switch-player
   [player]
-  (if (= player "X") "O" "X"))
+  (cond
+    (nil? player) nil
+    (= player "X") "O"
+    (= player "O") "X"))
 
 (defn check-rows
   [board player row]
@@ -57,5 +64,5 @@
       (check-columns board player 0)
       (check-diagonals board player)))
 
-(defn tie? [board]
+(defn full-board? [board]
   (not-any? #(= "-" %) (flatten board)))
